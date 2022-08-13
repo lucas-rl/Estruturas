@@ -83,42 +83,64 @@ class Barra:
                 cargasConcentradas.append(novaCarga)
         return cargasConcentradas
 
+    def cargaTransversalParaNo(self, carga):
+        reacoes = [[],[],[],[],[]]
+        a = carga.distanciaNoInicio
+        b = self.comprimento - a
+        reacoes[0] = carga.valor * b**2 * (3*a+b) / self.comprimento**3
+        reacoes[1] = carga.valor * a**2 * (a+3*b) / self.comprimento**3
+        reacoes[2] = carga.valor * a * b**2 / self.comprimento**2
+        reacoes[3] = -1 * carga.valor * a**2 * b / self.comprimento**2
+        return reacoes
+
+    def momentoParaNo(self, carga):
+        reacoes = [[],[],[],[],[]]
+        a = carga.distanciaNoInicio
+        b = self.comprimento - a
+        reacoes[0] = 6 * carga.valor * a*b / self.comprimento**3
+        reacoes[1] = -6 * carga.valor * a*b / self.comprimento**3
+        reacoes[2] = carga.valor * b * (2*a-b) / self.comprimento**2
+        reacoes[3] = carga.valor * a * (2*b-a) / self.comprimento**2
+        return reacoes
+
     def reacoesAsCargas(self):
         reacoesAsCargas = [
             [0],[0],[0],[0],[0],[0],
             [0],[0],[0],[0],[0],[0]
             ]
-        for carga in self.cargas:
-            if type(carga) is CargaConcentrada and carga.tipo == 0:
+        cargas = self.distParaConc()
+        for carga in cargas:
+            if  carga.tipo == 0:
                 reacoesAsCargas[0][0] += carga.valor/2
-                reacoesAsCargas[3][0] += carga.valor/2
-            elif type(carga) is CargaConcentrada and carga.tipo == 1:
+                reacoesAsCargas[6][0] += carga.valor/2
+            elif carga.tipo == 1:
+                reacoes = self.cargaTransversalParaNo(carga)
+                reacoesAsCargas[1][0] += reacoes[0]
+                reacoesAsCargas[7][0] += reacoes[1]
+                reacoesAsCargas[5][0] += reacoes[2]
+                reacoesAsCargas[11][0] += reacoes[3]
+            elif carga.tipo == 2:
+                reacoes = self.cargaTransversalParaNo(carga)
+                reacoesAsCargas[2][0] += reacoes[0]
+                reacoesAsCargas[8][0] += reacoes[1]
+                reacoesAsCargas[4][0] += reacoes[2]
+                reacoesAsCargas[10][0] += reacoes[3]
+            elif carga.tipo == 3:
                 a = carga.distanciaNoInicio
                 b = self.comprimento - a
-                reacoesAsCargas[1][0] += carga.valor * b**2 * (3*a+b) / self.comprimento**3
-                reacoesAsCargas[4][0] += carga.valor * a**2 * (a+3*b) / self.comprimento**3
-                reacoesAsCargas[2][0] += carga.valor * a * b**2 / self.comprimento**2
-                reacoesAsCargas[5][0] += -1 * carga.valor * a**2 * b / self.comprimento**2
-            elif type(carga) is CargaConcentrada and carga.tipo == 2:
-                a = carga.distanciaNoInicio
-                b = self.comprimento - a
-                reacoesAsCargas[1][0] += 6 * carga.valor * a* b / self.comprimento**3
-                reacoesAsCargas[4][0] += -6 * carga.valor * a* b / self.comprimento**3
-                reacoesAsCargas[2][0] += carga.valor * b * ( 2*a - b) / self.comprimento**2
-                reacoesAsCargas[5][0] += carga.valor * a * ( 2*b - a) / self.comprimento**2
-            else:
-                a = carga.distanciaNoInicio + carga.comprimento/2
-                b = self.comprimento - a
-                c = carga.comprimento
-                v = carga.valor
-                Ma = v*c*(12*a*b**2 + c**2 * (self.comprimento - 3*b)) / (12 * self.comprimento**2)
-                Mb = -Ma - 3*v*c**3 * (b-a) / (12 * self.comprimento**2)
-                Ra = v*c*b/self.comprimento + (Ma+Mb)/self.comprimento
-                Rb = v*c - Ra
-
-                reacoesAsCargas[1][0] += Ra
-                reacoesAsCargas[4][0] += Rb
-                reacoesAsCargas[2][0] += Ma
-                reacoesAsCargas[5][0] += Mb
+                reacoesAsCargas[3][0] = carga.valor * b / self.comprimento
+                reacoesAsCargas[3][0] = carga.valor * a / self.comprimento
+            elif carga.tipo == 4:
+                reacoes = self.momentoParaNo(carga)
+                reacoesAsCargas[2][0] += reacoes[0]
+                reacoesAsCargas[8][0] += reacoes[1]
+                reacoesAsCargas[4][0] += reacoes[2]
+                reacoesAsCargas[10][0] += reacoes[3]
+            elif carga.tipo == 5:
+                reacoes = self.momentoParaNo(carga)
+                reacoesAsCargas[1][0] += reacoes[0]
+                reacoesAsCargas[7][0] += reacoes[1]
+                reacoesAsCargas[5][0] += reacoes[2]
+                reacoesAsCargas[11][0] += reacoes[3]
 
         return reacoesAsCargas
