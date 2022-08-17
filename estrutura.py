@@ -193,7 +193,7 @@ class Estrutura:
 
             matrizRigidezBarra = barra.matriz
             reacoes = barra.reacoesAsCargas() 
-            print(reacoes)
+            #print(reacoes)
 
             esforcoBarra = []
             for i in range(0, 2*v):

@@ -34,39 +34,39 @@ class Barra:
         Cx = (self.fim.x - self.inicio.x)/self.comprimento
         Cy = (self.fim.y - self.inicio.y)/self.comprimento
         Cz = (self.fim.z - self.inicio.z)/self.comprimento
-        Cxy = (Cx**2 + Cy**2)**(1/2)
+        Cxz = (Cx**2 + Cz**2)**(1/2)
         cosa = np.cos(self.alfa)
         sena = np.sin(self.alfa)
-        if self.inicio.x == self.fim.x and self.inicio.y == self.fim.y:
+        if self.inicio.x == self.fim.x and self.inicio.z == self.fim.z:
             R = [
-                [0, Cz, 0],
-                [-Cz*cosa, 0, sena],
-                [Cz*sena, 0, cosa]
+                [0, Cy, 0],
+                [-Cy*cosa, 0, sena],
+                [Cy*sena, 0, cosa]
                 ]
         else:
             R = [
                 [Cx, Cy, Cz],
-                [(-Cx*Cy*cosa - Cz*sena)/Cxy, Cxy*cosa, (-Cy*Cz*cosa + Cx*sena)/Cxy],
-                [(Cx*Cy*sena - Cz*cosa)/Cxy, -Cxy*sena, (Cy*Cz*sena + Cx*cosa)/Cxy]
+                [(-Cx*Cy*cosa - Cz*sena)/Cxz, Cxz*cosa, (-Cy*Cz*cosa + Cx*sena)/Cxz],
+                [(Cx*Cy*sena - Cz*cosa)/Cxz, -Cxz*sena, (Cy*Cz*sena + Cx*cosa)/Cxz]
                 ]
         return R
 
     def matrizRotacao(self):
-        R = self.matrizR
-        matrizRotacao = []
+        R = self.matrizR()
+        matrizRot = []
         for i in range(0, 12):
-            matrizRotacao.append([])
+            matrizRot.append([])
             for j in range(0, 12):
-                matrizRotacao[i].append([0])
+                matrizRot[i].append(0)
         for i in range(0, 12, 3):
             for j in range(0, 3):
                 for k in range(0,3):    
-                    matrizRotacao[i+k][i+j] = R[k][j]
-        return matrizRotacao
+                    matrizRot[i+k][i+j] = R[k][j]
+        return matrizRot
 
     def matrizRigidezGlobal(self):
-        rotacaoTransposta = np.transpose(self.matrizRotacao)
-        matrizRigidezGlobal = np.dot(np.dot(rotacaoTransposta, self.matriz), self.matrizRotacao)
+        rotacaoTransposta = np.transpose(self.matrizRotacao())
+        matrizRigidezGlobal = np.dot(np.dot(rotacaoTransposta, self.matriz), self.matrizRotacao())
         return matrizRigidezGlobal
 
     def addCarga(self, carga):
@@ -89,8 +89,8 @@ class Barra:
         b = self.comprimento - a
         reacoes[0] = carga.valor * b**2 * (3*a+b) / self.comprimento**3
         reacoes[1] = carga.valor * a**2 * (a+3*b) / self.comprimento**3
-        reacoes[2] = carga.valor * a * b**2 / self.comprimento**2
-        reacoes[3] = -1 * carga.valor * a**2 * b / self.comprimento**2
+        reacoes[2] = -carga.valor * a * b**2 / self.comprimento**2
+        reacoes[3] = 1 * carga.valor * a**2 * b / self.comprimento**2
         return reacoes
 
     def momentoParaNo(self, carga):
@@ -99,8 +99,8 @@ class Barra:
         b = self.comprimento - a
         reacoes[0] = 6 * carga.valor * a*b / self.comprimento**3
         reacoes[1] = -6 * carga.valor * a*b / self.comprimento**3
-        reacoes[2] = carga.valor * b * (2*a-b) / self.comprimento**2
-        reacoes[3] = carga.valor * a * (2*b-a) / self.comprimento**2
+        reacoes[2] = -carga.valor * b * (2*a-b) / self.comprimento**2
+        reacoes[3] = -carga.valor * a * (2*b-a) / self.comprimento**2
         return reacoes
 
     def reacoesAsCargas(self):
