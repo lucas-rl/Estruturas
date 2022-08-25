@@ -3,6 +3,7 @@ from cargaConcentrada import CargaConcentrada
 from cargaDist import *
 from ponto import *
 from estrutura import *
+from Plot import *
 
 
 
@@ -21,13 +22,19 @@ p1.adicionarCarga(-3*p,5)
 b0 = Barra(p0,p1,200000000,80000000,0.01,2/1000,1/1000,1/1000,0)
 b1 = Barra(p2,p0,200000000,80000000,0.01,2/1000,1/1000,1/1000,0)
 b2 = Barra(p1,p3,200000000,80000000,0.01,2/1000,1/1000,1/1000,0)
-b0.addCarga(CargaConcentrada(3,4*p,2))
+b0.addCarga(CargaConcentrada(3, 4*p, 2))
 
 pontos = [p0,p1,p2,p3]
 barras = [b0,b1,b2]
 
 
 estrutura = Estrutura(barras, pontos)
+
+plot = Plot(estrutura)
+
+plot.plot()
+
+
 
 #for barra in estrutura.barras:
 #    print(barra.matrizR())
@@ -48,8 +55,8 @@ estrutura = Estrutura(barras, pontos)
 #print(deslocamentos)
 
 
-reacoesDeApoio = estrutura.reacoesDeApoio()
-print(reacoesDeApoio)
+#reacoesDeApoio = estrutura.reacoesDeApoio()
+#print(reacoesDeApoio)
 
 #esforcos = estrutura.esforcos()
 #for linha in esforcos:
