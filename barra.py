@@ -1,6 +1,6 @@
 import numpy as np
-from cargaConcentrada import CargaConcentrada
-from ponto import *
+from CargaConcentrada import *
+from Ponto import *
 
 class Barra:
     def __init__(self, inicio, fim, E, G, Ax, Ix, Iy, Iz, alfa):

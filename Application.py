@@ -1,8 +1,8 @@
-from barra import *
-from cargaConcentrada import CargaConcentrada
-from cargaDist import *
-from ponto import *
-from estrutura import *
+from Barra import *
+from CargaConcentrada import *
+from CargaDistribuida import *
+from Ponto import *
+from Estrutura import *
 from Plot import *
 
 
@@ -23,6 +23,7 @@ b0 = Barra(p0,p1,200000000,80000000,0.01,2/1000,1/1000,1/1000,0)
 b1 = Barra(p2,p0,200000000,80000000,0.01,2/1000,1/1000,1/1000,0)
 b2 = Barra(p1,p3,200000000,80000000,0.01,2/1000,1/1000,1/1000,0)
 b0.addCarga(CargaConcentrada(3, 4*p, 2))
+b2.addCarga(CargaConcentrada(3, 4*p, 2))
 
 pontos = [p0,p1,p2,p3]
 barras = [b0,b1,b2]
