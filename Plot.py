@@ -19,6 +19,7 @@ class Plot:
       if carga.tipo == 0 or carga.tipo == 3:
          Rf = [Ri[0] + tamanho, Ri[1], Ri[2]]
          fim = Ri[0] + seta*fimSeta
+         fim2 = Ri[0] + seta*fimSeta*2
          if carga.tipo == 0:
             setas = [
                [fim, Ri[1] + seta, Ri[2]],
@@ -35,15 +36,16 @@ class Plot:
                [fim, Ri[1], Ri[2] - seta],
 
                [fim, Ri[1], Ri[2]],
-               [fim*2, Ri[1] + seta, Ri[2]],
-               [fim*2, Ri[1] - seta, Ri[2]],
-               [fim*2, Ri[1], Ri[2] + seta],
-               [fim*2, Ri[1], Ri[2] - seta]
+               [fim2, Ri[1] + seta, Ri[2]],
+               [fim2, Ri[1] - seta, Ri[2]],
+               [fim2, Ri[1], Ri[2] + seta],
+               [fim2, Ri[1], Ri[2] - seta]
             ]
             return [Ri, Rf, "red", setas, carga.valor]
       elif carga.tipo == 1 or carga.tipo == 4:
          Rf = [Ri[0], Ri[1] + tamanho, Ri[2]]
          fim = Ri[1] + seta*fimSeta
+         fim2 = Ri[1] + seta*fimSeta*2
          if carga.tipo == 1: 
             setas = [
                [Ri[0] + seta, fim, Ri[2]],
@@ -60,15 +62,16 @@ class Plot:
                [Ri[0], fim, Ri[2] - seta],
 
                [Ri[0], fim, Ri[2]],
-               [Ri[0] + seta, fim*2, Ri[2]],
-               [Ri[0] - seta, fim*2, Ri[2]],
-               [Ri[0], fim*2, Ri[2] + seta],
-               [Ri[0], fim*2, Ri[2] - seta]
+               [Ri[0] + seta, fim2, Ri[2]],
+               [Ri[0] - seta, fim2, Ri[2]],
+               [Ri[0], fim2, Ri[2] + seta],
+               [Ri[0], fim2, Ri[2] - seta]
             ]
             return[Ri, Rf, "red", setas, carga.valor]
       else:
          Rf = [Ri[0], Ri[1], Ri[2] + tamanho]
          fim = Ri[2] + seta*fimSeta
+         fim2 = Ri[2] + seta*fimSeta*2
          if carga.tipo == 2:
             setas = [
                [Ri[0] + seta, Ri[1], fim],
@@ -85,10 +88,10 @@ class Plot:
                [Ri[0], Ri[1] - seta, fim],
 
                [Ri[0], Ri[1], fim],
-               [Ri[0] + seta, Ri[1], fim*2],
-               [Ri[0] - seta, Ri[1], fim*2],
-               [Ri[0], Ri[1] + seta, fim*2],
-               [Ri[0], Ri[1] - seta, fim*2]
+               [Ri[0] + seta, Ri[1], fim2],
+               [Ri[0] - seta, Ri[1], fim2],
+               [Ri[0], Ri[1] + seta, fim2],
+               [Ri[0], Ri[1] - seta, fim2]
             ]
             return[Ri, Rf, "red", setas, carga.valor]
 
@@ -138,12 +141,12 @@ class Plot:
       Z.append(barra.inicio.y)
       Z.append(barra.fim.y)
       self.ax.plot(X, Y, Z, c='k', linewidth=0.7)
-      self.ax.text((X[0]+X[1])/2,
-                   (Y[0]+Y[1])/2,
-                   (Z[0]+Z[1])/2,
-                   "{}".format(i+1),
-                  color="black", fontsize=6
-                  )
+      #self.ax.text((X[0]+X[1])/2,
+      #             (Y[0]+Y[1])/2,
+      #             (Z[0]+Z[1])/2,
+      #             "{}".format(i+1),
+      #            color="black", fontsize=6
+      #            )
 
       #plotar cargas nas barras
       plotCargas = self.vetorCargasBarra(barra)

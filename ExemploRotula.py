@@ -4,36 +4,38 @@ from CargaDistribuida import *
 from Ponto import *
 from Estrutura import *
 from Plot import *
+from Rotula import *
 
 
 
-p = 60
+p = -10
+l = 4
 
+e = 206.84*1000000
+g = 82.74*1000000
+ax = 70.97 / 10000
+ix = 3452.8 / 100000000
+iy = 2329.6 / 100000000
+iz = iy
 
-p0 = Ponto(0,3,0,0,0,0,0,0,0)
-p1 = Ponto(6,3,0,0,0,0,0,0,0)
-p2 = Ponto(0,0,0,1,1,1,1,1,1)
-p3 = Ponto(9,0,3,1,1,1,1,1,1)
+p0 = Ponto(0,0,0,1,1,1,1,1,1)
+p1 = Ponto(l,0,0,0,0,0,0,0,0)
+p2 = Ponto(2*l,0,0,0,1,0,0,0,0)
 
-p0.adicionarCarga(2*p, 0)
-p1.adicionarCarga(-p,1)
-p1.adicionarCarga(-3*p,5)
+r0 = Rotula(0,0,1)
 
-b0 = Barra(p0,p1,200000000,80000000,0.01,2/1000,1/1000,1/1000,0)
-b1 = Barra(p2,p0,200000000,80000000,0.01,2/1000,1/1000,1/1000,0)
-b2 = Barra(p1,p3,200000000,80000000,0.01,2/1000,1/1000,1/1000,0)
-b0.addCarga(CargaConcentrada(3, 4*p, 2))
-b2.addCarga(CargaConcentrada(3, 4*p, 2))
+b0 = Barra(p0,p1,e,g,ax,ix,iy,iz,0,None,r0)
+b1 = Barra(p1,p2,e,g,ax,ix,iy,iz,0,None,None)
 
-pontos = [p0,p1,p2,p3]
-barras = [b0,b1,b2]
+b0.addCarga(CargaConcentrada(l/2,p, 1))
+b1.addCarga(CargaDistribuida(0,l,p,1))
+
+pontos = [p0,p1,p2]
+barras = [b0,b1]
 
 
 estrutura = Estrutura(barras, pontos)
 
-plot = Plot(estrutura)
-
-plot.plot()
 
 
 
@@ -55,15 +57,15 @@ plot.plot()
 #deslocamentos = estrutura.deslocamentos()
 #print(deslocamentos)
 
-
-#reacoesDeApoio = estrutura.reacoesDeApoio()
-#print(reacoesDeApoio)
-
+    
+reacoes = estrutura.reacoesDeApoio()
+print(reacoes)
+print("-----------")
 #esforcos = estrutura.esforcos()
 #for linha in esforcos:
 #    print(linha)
 #    print()
-#print()
+
 
 
 

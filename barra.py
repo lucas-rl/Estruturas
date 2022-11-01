@@ -3,7 +3,7 @@ from CargaConcentrada import *
 from Ponto import *
 
 class Barra:
-    def __init__(self, inicio, fim, E, G, Ax, Ix, Iy, Iz, alfa):
+    def __init__(self, inicio, fim, E, G, Ax, Ix, Iy, Iz, alfa, rotulaInicio, rotulaFim):
         self.inicio = inicio
         self.fim = fim
         self.comprimento = ((inicio.x - fim.x)**2 + (inicio.y - fim.y)**2 + (inicio.z - fim.z)**2)**(1/2)
@@ -14,6 +14,8 @@ class Barra:
         self.Iy = Iy
         self.Iz = Iz
         self.alfa = np.radians(alfa)
+        self.rotulaInicio = rotulaInicio
+        self.rotulaFim = rotulaFim
         self.cargas = []
         self.matriz = [
             [E*Ax/self.comprimento, 0,0,0,0,0, -E*Ax/self.comprimento, 0,0,0,0,0],
@@ -64,9 +66,32 @@ class Barra:
                     matrizRot[i+k][i+j] = R[k][j]
         return matrizRot
 
+    def __zerarRigidez(self, indice, matriz):
+        for i in range(0,12):
+            matriz[indice][i] = 0
+            matriz[i][indice] = 0
+        return matriz 
+
     def matrizRigidezGlobal(self):
+        matrizLocal = self.matriz
+        if(self.rotulaInicio != None):
+            if self.rotulaInicio.x == 1 :
+                matrizLocal = self.__zerarRigidez(3, matrizLocal)
+            if self.rotulaInicio.y == 1 :
+                matrizLocal = self.__zerarRigidez(4, matrizLocal)
+            if self.rotulaInicio.z == 1 :
+                matrizLocal = self.__zerarRigidez(5, matrizLocal)
+
+        if(self.rotulaFim != None):
+            if self.rotulaFim.x == 1 :
+                matrizLocal = self.__zerarRigidez(9, matrizLocal)
+            if self.rotulaFim.y == 1 :
+                matrizLocal = self.__zerarRigidez(10, matrizLocal)
+            if self.rotulaFim.z == 1 :
+                matrizLocal = self.__zerarRigidez(11, matrizLocal)
+
         rotacaoTransposta = np.transpose(self.matrizRotacao())
-        matrizRigidezGlobal = np.dot(np.dot(rotacaoTransposta, self.matriz), self.matrizRotacao())
+        matrizRigidezGlobal = np.dot(np.dot(rotacaoTransposta, matrizLocal), self.matrizRotacao())
         return matrizRigidezGlobal
 
     def addCarga(self, carga):
@@ -102,7 +127,7 @@ class Barra:
         reacoes[2] = -carga.valor * b * (2*a-b) / self.comprimento**2
         reacoes[3] = -carga.valor * a * (2*b-a) / self.comprimento**2
         return reacoes
-
+    
     def reacoesAsCargas(self):
         reacoesAsCargas = [
             [0],[0],[0],[0],[0],[0],

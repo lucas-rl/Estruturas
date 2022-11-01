@@ -100,8 +100,9 @@ class Estrutura:
             for j in range(len(indicesNulos)):
                 matrizSistema[i].append(matrizGlobal[indicesNulos[i]][indicesNulos[j]])
         
+        cargasNodaisCombinadas = self.cargasNodaisCombinadas() 
         for indice in indicesNulos:
-            matrizCargas.append(self.cargasNodaisCombinadas()[indice])
+            matrizCargas.append(cargasNodaisCombinadas[indice])
         
         matrizSistema = np.array(matrizSistema)
         matrizCargas = np.array(matrizCargas)
@@ -161,7 +162,6 @@ class Estrutura:
         
         for vinculoRestrito in vinculosRestringidos:
             reacoesDeApoio[vinculoRestrito] -=  cargasNodaisCombinadas[vinculoRestrito][0]
-            print()
             for vinculoLivre in vinculosLivres:
                 reacoesDeApoio[vinculoRestrito] += matrizRigidez[vinculoRestrito][vinculoLivre] * deslocamentos[vinculoLivre]
         
@@ -193,7 +193,6 @@ class Estrutura:
 
             matrizRigidezBarra = barra.matriz
             reacoes = barra.reacoesAsCargas() 
-            #print(reacoes)
 
             esforcoBarra = []
             for i in range(0, 2*v):
