@@ -108,22 +108,26 @@ class Barra:
                 cargasConcentradas.append(novaCarga)
         return cargasConcentradas
 
-    def cargaTransversalParaNo(self, carga):
+    def cargaTransversalParaNo(self, carga, tipoCarga):
+        sinal = -1
+        if (tipoCarga == 2): sinal = 1
         reacoes = [[],[],[],[],[]]
         a = carga.distanciaNoInicio
         b = self.comprimento - a
-        reacoes[0] = carga.valor * b**2 * (3*a+b) / self.comprimento**3
-        reacoes[1] = carga.valor * a**2 * (a+3*b) / self.comprimento**3
-        reacoes[2] = -carga.valor * a * b**2 / self.comprimento**2
-        reacoes[3] = 1 * carga.valor * a**2 * b / self.comprimento**2
+        reacoes[0] = -carga.valor * b**2 * (3*a+b) / self.comprimento**3
+        reacoes[1] = -carga.valor * a**2 * (a+3*b) / self.comprimento**3
+        reacoes[2] =  sinal * carga.valor * a * b**2 / self.comprimento**2
+        reacoes[3] =  -sinal * carga.valor * a**2 * b / self.comprimento**2
         return reacoes
 
-    def momentoParaNo(self, carga):
+    def momentoParaNo(self, carga, tipoCarga):
+        sinal = 1
+        if (tipoCarga == 4): sinal = -1
         reacoes = [[],[],[],[],[]]
         a = carga.distanciaNoInicio
         b = self.comprimento - a
-        reacoes[0] = 6 * carga.valor * a*b / self.comprimento**3
-        reacoes[1] = -6 * carga.valor * a*b / self.comprimento**3
+        reacoes[0] = sinal * 6 * carga.valor * a*b / self.comprimento**3
+        reacoes[1] = -sinal * 6 * carga.valor * a*b / self.comprimento**3
         reacoes[2] = -carga.valor * b * (2*a-b) / self.comprimento**2
         reacoes[3] = -carga.valor * a * (2*b-a) / self.comprimento**2
         return reacoes
@@ -136,16 +140,16 @@ class Barra:
         cargas = self.distParaConc()
         for carga in cargas:
             if  carga.tipo == 0:
-                reacoesAsCargas[0][0] += carga.valor/2
-                reacoesAsCargas[6][0] += carga.valor/2
+                reacoesAsCargas[0][0] -= carga.valor/2
+                reacoesAsCargas[6][0] -= carga.valor/2
             elif carga.tipo == 1:
-                reacoes = self.cargaTransversalParaNo(carga)
+                reacoes = self.cargaTransversalParaNo(carga,1)
                 reacoesAsCargas[1][0] += reacoes[0]
                 reacoesAsCargas[7][0] += reacoes[1]
                 reacoesAsCargas[5][0] += reacoes[2]
                 reacoesAsCargas[11][0] += reacoes[3]
             elif carga.tipo == 2:
-                reacoes = self.cargaTransversalParaNo(carga)
+                reacoes = self.cargaTransversalParaNo(carga,2)
                 reacoesAsCargas[2][0] += reacoes[0]
                 reacoesAsCargas[8][0] += reacoes[1]
                 reacoesAsCargas[4][0] += reacoes[2]
@@ -153,16 +157,16 @@ class Barra:
             elif carga.tipo == 3:
                 a = carga.distanciaNoInicio
                 b = self.comprimento - a
-                reacoesAsCargas[3][0] = carga.valor * b / self.comprimento
-                reacoesAsCargas[3][0] = carga.valor * a / self.comprimento
+                reacoesAsCargas[3][0] -= carga.valor * b / self.comprimento
+                reacoesAsCargas[9][0] -= carga.valor * a / self.comprimento
             elif carga.tipo == 4:
-                reacoes = self.momentoParaNo(carga)
+                reacoes = self.momentoParaNo(carga,4)
                 reacoesAsCargas[2][0] += reacoes[0]
                 reacoesAsCargas[8][0] += reacoes[1]
                 reacoesAsCargas[4][0] += reacoes[2]
                 reacoesAsCargas[10][0] += reacoes[3]
             elif carga.tipo == 5:
-                reacoes = self.momentoParaNo(carga)
+                reacoes = self.momentoParaNo(carga,5)
                 reacoesAsCargas[1][0] += reacoes[0]
                 reacoesAsCargas[7][0] += reacoes[1]
                 reacoesAsCargas[5][0] += reacoes[2]

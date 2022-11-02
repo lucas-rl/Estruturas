@@ -31,44 +31,22 @@ b1 = Barra(p1,p2,e,g,ax,ix,iy,iz,0,None,None)
 b2 = Barra(p2,p3,e,g,ax,ix,iy,iz,0,None,None)
 b1.addCarga(CargaConcentrada(l, 4*p, 2))
 
-
 pontos = [p0,p1,p2,p3]
 barras = [b0,b1,b2]
 
 
 estrutura = Estrutura(barras, pontos)
 
-
-
-
-#for barra in estrutura.barras:
-#    print(barra.matrizR())
-
-#matrizRigidez = estrutura.matrizRigidez()
-#for linha in matrizRigidez:
-#    print(linha)
-#print()
-#for barra in estrutura.barras:
-#    print(barra.reacoesAsCargas())
+#print(b1.reacoesAsCargas())
 #print(estrutura.cargasNodaisEquivalentes())
-#print(estrutura.cargasNodais())
-#print("---------------------")
+#print("---------")
 #print(estrutura.cargasNodaisCombinadas())
 
-
-deslocamentos = estrutura.deslocamentos()
-print(deslocamentos)
-
-print("----")
-    
-reacoes = estrutura.reacoesDeApoio()
-print(reacoes)
-
-#esforcos = estrutura.esforcos()
-#for linha in esforcos:
-#    print(linha)
-#    print()
-#print()
+#print(estrutura.cargasNodais())
+#print("------")
+print("Reaçoes de apoio: ", estrutura.reacoesDeApoio())
+#print("--------")
+#print("Deslocamentos: ", estrutura.deslocamentos())
 
 
 

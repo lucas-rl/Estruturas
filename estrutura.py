@@ -48,19 +48,19 @@ class Estrutura:
             inicio = self.pontos.index(barra.inicio)
             fim = self.pontos.index(barra.fim)
             
-            cargasNodaisEquivalentes[v*inicio][0] += cargasEquivalentes[0][0]
-            cargasNodaisEquivalentes[v*inicio+1][0] += cargasEquivalentes[1][0]
-            cargasNodaisEquivalentes[v*inicio+2][0] += cargasEquivalentes[2][0]
-            cargasNodaisEquivalentes[v*inicio+3][0] += cargasEquivalentes[3][0]
-            cargasNodaisEquivalentes[v*inicio+4][0] += cargasEquivalentes[4][0]
-            cargasNodaisEquivalentes[v*inicio+5][0] += cargasEquivalentes[5][0]
+            cargasNodaisEquivalentes[v*inicio][0] -= cargasEquivalentes[0][0]
+            cargasNodaisEquivalentes[v*inicio+1][0] -= cargasEquivalentes[1][0]
+            cargasNodaisEquivalentes[v*inicio+2][0] -= cargasEquivalentes[2][0]
+            cargasNodaisEquivalentes[v*inicio+3][0] -= cargasEquivalentes[3][0]
+            cargasNodaisEquivalentes[v*inicio+4][0] -= cargasEquivalentes[4][0]
+            cargasNodaisEquivalentes[v*inicio+5][0] -= cargasEquivalentes[5][0]
             
-            cargasNodaisEquivalentes[v*fim][0] += cargasEquivalentes[6][0]
-            cargasNodaisEquivalentes[v*fim+1][0] += cargasEquivalentes[7][0]
-            cargasNodaisEquivalentes[v*fim+2][0] += cargasEquivalentes[8][0]
-            cargasNodaisEquivalentes[v*fim+3][0] += cargasEquivalentes[9][0]
-            cargasNodaisEquivalentes[v*fim+4][0] += cargasEquivalentes[10][0]
-            cargasNodaisEquivalentes[v*fim+5][0] += cargasEquivalentes[11][0]
+            cargasNodaisEquivalentes[v*fim][0] -= cargasEquivalentes[6][0]
+            cargasNodaisEquivalentes[v*fim+1][0] -= cargasEquivalentes[7][0]
+            cargasNodaisEquivalentes[v*fim+2][0] -= cargasEquivalentes[8][0]
+            cargasNodaisEquivalentes[v*fim+3][0] -= cargasEquivalentes[9][0]
+            cargasNodaisEquivalentes[v*fim+4][0] -= cargasEquivalentes[10][0]
+            cargasNodaisEquivalentes[v*fim+5][0] -= cargasEquivalentes[11][0]
 
         return cargasNodaisEquivalentes
 
@@ -74,13 +74,9 @@ class Estrutura:
 
         return cargasNodaisCombinadas
 
-    def deslocamentos(self):
-        v = 6 #vinculos por nó
-        matrizGlobal = self.matrizRigidez()
-        matrizSistema = []
+    def __indicesNulos(self):
+        v = 6
         indicesNulos = []
-        matrizCargas = []
-        
         for i in range(0, len(self.pontos)):
             if self.pontos[i].restricaoLinearX == 0:
                 indicesNulos.append(v*i)
@@ -94,57 +90,10 @@ class Estrutura:
                 indicesNulos.append(v*i+4)
             if self.pontos[i].restricaoRotacaoZ == 0:
                 indicesNulos.append(v*i+5)
+        return indicesNulos
 
-        for i in range(0, len(indicesNulos)):
-            matrizSistema.append([])
-            for j in range(len(indicesNulos)):
-                matrizSistema[i].append(matrizGlobal[indicesNulos[i]][indicesNulos[j]])
-        
-        cargasNodaisCombinadas = self.cargasNodaisCombinadas() 
-        for indice in indicesNulos:
-            matrizCargas.append(cargasNodaisCombinadas[indice])
-        
-        matrizSistema = np.array(matrizSistema)
-        matrizCargas = np.array(matrizCargas)
-        
-        resultadoDeslocamentos = np.linalg.solve(matrizSistema, matrizCargas)
-
-        deslocamentos = []
-        for ponto in self.pontos:
-            for i in range(v):
-                deslocamentos.append(0)
-            
-        
-        for i in range(len(indicesNulos)):
-            deslocamentos[indicesNulos[i]] = resultadoDeslocamentos[i][0]
-
-        return deslocamentos
-
-    def reacoesDeApoio(self):
-        v = 6 #vinculos por nó
-        matrizRigidez = self.matrizRigidez()
-        cargasNodaisCombinadas = self.cargasNodaisCombinadas()
-        deslocamentos = self.deslocamentos()
-        reacoesDeApoio = []
-        for ponto in self.pontos:
-            for i in range(v):
-                reacoesDeApoio.append(0)
-
-        vinculosLivres = []
-        for i in range(len(self.pontos)):
-            if self.pontos[i].restricaoLinearX == 0:
-                vinculosLivres.append(v*i)
-            if self.pontos[i].restricaoLinearY == 0:
-                vinculosLivres.append(v*i+1)
-            if self.pontos[i].restricaoLinearZ == 0:
-                vinculosLivres.append(v*i+2)
-            if self.pontos[i].restricaoRotacaoX == 0:
-                vinculosLivres.append(v*i+3)
-            if self.pontos[i].restricaoRotacaoY == 0:
-                vinculosLivres.append(v*i+4)
-            if self.pontos[i].restricaoRotacaoZ == 0:
-                vinculosLivres.append(v*i+5)
-
+    def __indicesRestritos(self):
+        v = 6
         vinculosRestringidos = []
         for i in range(len(self.pontos)):
             if self.pontos[i].restricaoLinearX == 1:
@@ -159,12 +108,67 @@ class Estrutura:
                 vinculosRestringidos.append(v*i+4)
             if self.pontos[i].restricaoRotacaoZ == 1:
                 vinculosRestringidos.append(v*i+5)
+        return vinculosRestringidos
+
+
+    def deslocamentos(self):
+        v = 6 #vinculos por nó
+        matrizGlobal = self.matrizRigidez()
+        matrizSistema = []
+        indicesNulos = self.__indicesNulos()
+        matrizCargas = []
+        
+        for i in range(0, len(indicesNulos)):
+            matrizSistema.append([])
+            for j in range(len(indicesNulos)):
+                matrizSistema[i].append(matrizGlobal[indicesNulos[i]][indicesNulos[j]])
+        
+        cargasNodaisCombinadas = self.cargasNodaisCombinadas() 
+    
+        for indice in indicesNulos:
+            cargaDesloc = 0
+            for i in range(0, len(self.pontos)):
+                for desloc in self.pontos[i].deslocamentosPrescritos:
+                    cargaDesloc += matrizGlobal[indice][i*v+desloc.vinculo] * desloc.valor
+            matrizCargas.append([cargasNodaisCombinadas[indice][0] - cargaDesloc])
+        
+        matrizSistema = np.array(matrizSistema)
+        matrizCargas = np.array(matrizCargas)
+
+        if ( len(matrizCargas) > 0 and len(matrizSistema) > 0):
+            resultadoDeslocamentos = np.linalg.solve(matrizSistema, matrizCargas)
+        else: resultadoDeslocamentos = []
+        deslocamentos = []
+        for ponto in self.pontos:
+            for i in range(v):
+                deslocamentos.append(0)
+            
+        for i in range(0, len(indicesNulos)):
+            deslocamentos[indicesNulos[i]] = resultadoDeslocamentos[i][0]
+        for i in range(0, len(self.pontos)):
+            for desloc in self.pontos[i].deslocamentosPrescritos:
+                deslocamentos[i*v+desloc.vinculo] = desloc.valor
+        return deslocamentos
+
+    def reacoesDeApoio(self):
+        v = 6 #vinculos por nó
+        matrizRigidez = self.matrizRigidez()
+        cargasNodaisCombinadas = self.cargasNodaisCombinadas()
+        deslocamentos = self.deslocamentos()
+        reacoesDeApoio = []
+        for ponto in self.pontos:
+            for i in range(v):
+                reacoesDeApoio.append(0)
+
+        vinculosLivres = self.__indicesNulos()
+        vinculosRestringidos = self.__indicesRestritos()
         
         for vinculoRestrito in vinculosRestringidos:
             reacoesDeApoio[vinculoRestrito] -=  cargasNodaisCombinadas[vinculoRestrito][0]
+            for restrito in vinculosRestringidos:
+                reacoesDeApoio[vinculoRestrito] += matrizRigidez[vinculoRestrito][restrito] * deslocamentos[restrito]
             for vinculoLivre in vinculosLivres:
                 reacoesDeApoio[vinculoRestrito] += matrizRigidez[vinculoRestrito][vinculoLivre] * deslocamentos[vinculoLivre]
-        
         return reacoesDeApoio
 
     def esforcos(self):
@@ -196,7 +200,7 @@ class Estrutura:
 
             esforcoBarra = []
             for i in range(0, 2*v):
-                esforcoBarra.append([-reacoes[i][0]])
+                esforcoBarra.append([reacoes[i][0]])
                 for j in range(0, 2*v):
                     esforcoBarra[i][0] += matrizRigidezBarra[i][j] * deslocamentos[j][0]
             esforcos.append(esforcoBarra)
