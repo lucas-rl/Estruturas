@@ -26,7 +26,14 @@ class Estrutura:
                     matrizEstrutura[inicio+j][inicio+k] += matrizBarra[j][k]
                     matrizEstrutura[fim+j][fim+k] += matrizBarra[j+v][k+v]
                     matrizEstrutura[inicio+j][fim+k] += matrizBarra[j][k+v]
-                    matrizEstrutura[fim+j][inicio+k] += matrizBarra[j+v][k]                
+                    matrizEstrutura[fim+j][inicio+k] += matrizBarra[j+v][k] 
+            
+            pontos = self.pontos
+            for i in range(0, len(pontos)):
+                for apoioElastico in pontos[i].apoiosElasticos:
+                    indice = i*v+apoioElastico.vinculo
+                    matrizEstrutura[indice][indice] += apoioElastico.valor
+
         return matrizEstrutura
 
     def cargasNodais(self):
@@ -150,6 +157,20 @@ class Estrutura:
                 deslocamentos[i*v+desloc.vinculo] = desloc.valor
         return deslocamentos
 
+    def segundaOpcaoReacoes(self):
+        matrizRigidez = self.matrizRigidez()
+        cargasNodaisCombinadas = self.cargasNodaisCombinadas()
+        deslocamentosInicial = self.deslocamentos()
+        deslocamentos = []
+        for deslocamento in deslocamentosInicial:
+            deslocamentos.append([deslocamento])
+        matrizRigidez = np.array(matrizRigidez)
+        cargasNodaisCombinadas = np.array(cargasNodaisCombinadas)
+        deslocamentos = np.array(deslocamentos)
+        resultado = np.matmul(matrizRigidez, deslocamentos)
+        resultado = np.subtract(resultado, cargasNodaisCombinadas)
+        return resultado
+
     def reacoesDeApoio(self):
         v = 6 #vinculos por nó
         matrizRigidez = self.matrizRigidez()
@@ -169,6 +190,15 @@ class Estrutura:
                 reacoesDeApoio[vinculoRestrito] += matrizRigidez[vinculoRestrito][restrito] * deslocamentos[restrito]
             for vinculoLivre in vinculosLivres:
                 reacoesDeApoio[vinculoRestrito] += matrizRigidez[vinculoRestrito][vinculoLivre] * deslocamentos[vinculoLivre]
+        
+        pontos = self.pontos
+        for i in range(0, len(pontos)):
+            for apoioElastico in pontos[i].apoiosElasticos:
+                indice = i*v+apoioElastico.vinculo
+                reacoesDeApoio[indice] -= deslocamentos[indice]*apoioElastico.valor
+        
+
+        
         return reacoesDeApoio
 
     def esforcos(self):

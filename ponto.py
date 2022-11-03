@@ -16,6 +16,7 @@ class Ponto:
         self.cargas = [0,0,0,0,0,0]
 
         self.deslocamentosPrescritos = []
+        self.apoiosElasticos = []
 
     #0, 1 e 2 -> linear x, y e z
     #3, 4 e 5 -> momento x, y e z
@@ -24,3 +25,6 @@ class Ponto:
 
     def adicionarDeslocamentoPrescrito(self, deslocamento):
         self.deslocamentosPrescritos.append(deslocamento)
+
+    def adicionarApoioElastico(self, apoio):
+        self.apoiosElasticos.append(apoio)

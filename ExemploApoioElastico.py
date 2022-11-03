@@ -5,11 +5,12 @@ from Ponto import *
 from Estrutura import *
 from Plot import *
 from DeslocamentoPrescrito import *
+from ApoioElastico import *
 
 p0 = Ponto(0,0,0,1,1,1,1,1,1)
-p1 = Ponto(3000,0,0,0,1,0,0,0,0)
+p1 = Ponto(3000,0,0,0,0,0,0,0,0)
 
-p1.adicionarDeslocamentoPrescrito(DeslocamentoPrescrito(1,-10))
+p1.adicionarApoioElastico(ApoioElastico(1,10/1000))
 
 e = 100000 * 1000
 g = 82
@@ -28,6 +29,7 @@ estrutura = Estrutura(barras, pontos)
 
 #print(estrutura.cargasNodaisCombinadas())
 print("Reações de apoio: ", estrutura.reacoesDeApoio())
+#print("Reações 2: ", estrutura.segundaOpcaoReacoes())
 #print("Reações 2: ", estrutura.segundaOpcaoReacoes())
 #print("Deslocamentos: ", estrutura.deslocamentos())
 #print("Esforços: ", estrutura.esforcos())

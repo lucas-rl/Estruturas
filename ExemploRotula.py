@@ -39,7 +39,7 @@ estrutura = Estrutura(barras, pontos)
 
     
 print(estrutura.reacoesDeApoio())
-
+#print(estrutura.deslocamentos())
 
 
 

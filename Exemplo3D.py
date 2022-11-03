@@ -45,6 +45,7 @@ estrutura = Estrutura(barras, pontos)
 #print(estrutura.cargasNodais())
 #print("------")
 print("Reaçoes de apoio: ", estrutura.reacoesDeApoio())
+#print("Reações 2: ", estrutura.segundaOpcaoReacoes())
 #print("--------")
 #print("Deslocamentos: ", estrutura.deslocamentos())
 
