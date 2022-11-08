@@ -113,8 +113,8 @@ class Barra:
                 if matrizLocal[indice][segInd] != 0:
                         matrizLocal[indice][segInd] = matrizRotula[indice][segInd]
         return matrizLocal
-        
-    def matrizRigidezGlobal(self):
+    
+    def matrizRigidez(self):
         matrizLocal = self.matriz
         if(self.rotulaInicio != None):
             if self.rotulaInicio.x == 1 :
@@ -135,7 +135,11 @@ class Barra:
             if self.rotulaFim.z == 1 :
                 matrizLocal = self.__matrizRotulas(1,5,7,11,matrizLocal)
                 matrizLocal = self.__zerarRigidez(11, matrizLocal)
+        
+        return matrizLocal
 
+    def matrizRigidezGlobal(self):
+        matrizLocal = self.matrizRigidez()
         rotacaoTransposta = np.transpose(self.matrizRotacao())
         matrizRigidezGlobal = np.dot(np.dot(rotacaoTransposta, matrizLocal), self.matrizRotacao())
         return matrizRigidezGlobal

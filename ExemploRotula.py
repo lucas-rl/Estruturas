@@ -20,7 +20,7 @@ iz = iy
 
 p0 = Ponto(0,0,0,1,1,1,1,1,1)
 p1 = Ponto(l,0,0,0,0,0,0,0,0)
-p2 = Ponto(2*l,0,0,1,1,1,1,1,1)
+p2 = Ponto(2*l,0,0,0,1,0,0,0,0)
 
 r0 = Rotula(0,0,1)
 
@@ -39,6 +39,8 @@ estrutura = Estrutura(barras, pontos)
 
     
 print(estrutura.reacoesDeApoio())
+print("Esforços")
+print(estrutura.esforcos())
 #print(estrutura.cargasNodaisCombinadas())
 #print(estrutura.deslocamentos())
 #print(estrutura.segundaOpcaoReacoes())

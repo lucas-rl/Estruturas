@@ -1,6 +1,5 @@
 import numpy as np
 
-
 class Estrutura:
     def __init__(self, barras, pontos):
         self.barras = barras
@@ -117,7 +116,6 @@ class Estrutura:
                 vinculosRestringidos.append(v*i+5)
         return vinculosRestringidos
 
-
     def deslocamentos(self):
         v = 6 #vinculos por nó
         matrizGlobal = self.matrizRigidez()
@@ -197,8 +195,6 @@ class Estrutura:
                 indice = i*v+apoioElastico.vinculo
                 reacoesDeApoio[indice] -= deslocamentos[indice]*apoioElastico.valor
         
-
-        
         return reacoesDeApoio
 
     def esforcos(self):
@@ -230,14 +226,29 @@ class Estrutura:
 
             esforcoBarra = []
             for i in range(0, 2*v):
-                esforcoBarra.append([reacoes[i][0]])
+                esforcoBarra.append(reacoes[i][0])
                 for j in range(0, 2*v):
-                    esforcoBarra[i][0] += matrizRigidezBarra[i][j] * deslocamentos[j][0]
+                    esforcoBarra[i] += matrizRigidezBarra[i][j] * deslocamentos[j][0]
+                if i > 5: esforcoBarra[i] = -esforcoBarra[i]
             esforcos.append(esforcoBarra)
         return esforcos
 
+    def equacoes(self,tipo):
+        equacoes = []
+        esforcos = self.esforcos()
+        barras = self.barras
+        for i in range(0,len(barras)):
+            inicio = esforcos[i][tipo]
+            fim = esforcos[i][tipo+6]
+            diferenca = inicio-fim
+            if diferenca == 0:
+                equacoes.append("f(x) = " + str(inicio))
+            else:
+                equacoes.append("f(x) = " + str(diferenca/barras[i].comprimento) + "X + " + str(inicio))
+        return equacoes
 
 
+            
 
 
 
